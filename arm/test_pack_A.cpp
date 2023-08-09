@@ -692,8 +692,7 @@ int main() {
     init_Mat(in);
     // check function pack_A_tile
     pack_A_tile(in, out, 0, h, 0, w);
-    transpose_pack_A_tile(in, out, 0, h, 0, w);
-    transpose_pack_A_tile_naive(in, out_check, 0, h, 0, w);
+    pack_A_tile_naive(in, out_check, 0, h, 0, w);
 
 #if PRINT_MAT
     print_Mat(in);
