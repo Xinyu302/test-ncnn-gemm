@@ -3,7 +3,7 @@
 #include "utils.h"
 // #undef __aarch64__
 #define PRINT_MAT 0
-#define PACK_8 0
+#define PACK_8 1
 
 #if PACK_8
 
