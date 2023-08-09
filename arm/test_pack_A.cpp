@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "utils.h"
 // #undef __aarch64__
-#define PRINT_MAT 0
+#define PRINT_MAT 1
 #define PACK_8 1
 
 #if PACK_8
@@ -356,7 +356,7 @@ static void transpose_pack_A_tile_naive(const Mat& A, Mat& AT, int i, int max_ii
     float* pp = AT;
 
     int ii = 0;
-#if PACK8
+#if PACK_8
     for (; ii + 7 < max_ii; ii += 8)
     {
         if (elempack == 4)
@@ -432,7 +432,7 @@ static void transpose_pack_A_tile_naive(const Mat& A, Mat& AT, int i, int max_ii
             }
         }
     }
-#endif // PACK8
+#endif // PACK_8
     for (; ii + 3 < max_ii; ii += 4) {
         if (elempack == 4) {
             const float* p0 = (const float*)A + k * A_hstep + (i + ii) * 4;
@@ -700,7 +700,7 @@ int main() {
     printf("------------------------\n");
     print_Mat(out);
     printf("------------------------\n");
-    print_Mat(out);
+    print_Mat(out_check);
     printf("------------------------\n");
 #endif
 
