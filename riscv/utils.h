@@ -63,6 +63,11 @@ vfloat32m1_t vfmaq_laneq_f32(vfloat32m1_t sum, vfloat32m1_t a, vfloat32m1_t b, i
             a, t[lane], sum, 4);
     return ret;     
 }
+
+vfloat32m1_t vdupq_n_f32(float32_t f) {
+    return vfmv_v_f_f32m1(f, 4);
+}
+
 #define VL 4
 
 vfloat32m1x2_t vzip_f32(vfloat32m1_t vector1, vfloat32m1_t vector2) {
