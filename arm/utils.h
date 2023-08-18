@@ -90,3 +90,15 @@ static inline void transpose8x8_ps(float32x4_t& _r0l, float32x4_t& _r0h,
     _r7l = vcombine_f32(vget_high_f32(_r01hz.val[1]), vget_high_f32(_r23hz.val[1]));
     _r7h = vcombine_f32(vget_high_f32(_r45hz.val[1]), vget_high_f32(_r67hz.val[1]));
 }
+
+static inline void transpose4x4_ps(float32x4_t& _r0, float32x4_t& _r1, float32x4_t& _r2, float32x4_t& _r3)
+{
+    float32x4x2_t _r01z = vzipq_f32(_r0, _r1);
+    float32x4x2_t _r23z = vzipq_f32(_r2, _r3);
+    _r0 = vcombine_f32(vget_low_f32(_r01z.val[0]), vget_low_f32(_r23z.val[0]));
+    _r1 = vcombine_f32(vget_high_f32(_r01z.val[0]), vget_high_f32(_r23z.val[0]));
+    _r2 = vcombine_f32(vget_low_f32(_r01z.val[1]), vget_low_f32(_r23z.val[1]));
+    _r3 = vcombine_f32(vget_high_f32(_r01z.val[1]), vget_high_f32(_r23z.val[1]));
+}
+
+
