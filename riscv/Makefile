@@ -13,8 +13,11 @@ pack_b: test_pack_B_handle.cpp
 runb: pack_b
 	qemu-riscv64 -cpu c906fdv ./pack_b
 
+gemm:
+	$(CC) test_gemm_transB_packed_tile.cpp -O3  -c -o $@ $(CXXFLAGS)
+
 clean:
 	rm -rf pack_a
 	rm -rf pack_b
-	
+
 # clang armcommon_tinycv_rotate_fp16.c armcommon_tinycv_rotate_ui8.c main_fp16.c -O3  -o mat_fp16
