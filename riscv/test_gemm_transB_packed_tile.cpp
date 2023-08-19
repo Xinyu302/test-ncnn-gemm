@@ -961,12 +961,12 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pA0 = vle32_v_f32m1(pA, VL);
                 vfloat32m1_t _pA1 = vle32_v_f32m1(pA + 4, VL);
 
-                float32x2_t _pB0 = vld1_f32(pB);
+                vfloat32m1_t _pB0 = vle32_v_f32m1(pB, VL / 2);
 
-                _sum00 = vfmaq_lane_f32(_sum00, _pA0, _pB0, 0);
-                _sum01 = vfmaq_lane_f32(_sum01, _pA1, _pB0, 0);
-                _sum10 = vfmaq_lane_f32(_sum10, _pA0, _pB0, 1);
-                _sum11 = vfmaq_lane_f32(_sum11, _pA1, _pB0, 1);
+                _sum00 = vfmaq_laneq_f32_riscv(_sum00, _pA0, _pB0, 0);
+                _sum01 = vfmaq_laneq_f32_riscv(_sum01, _pA1, _pB0, 0);
+                _sum10 = vfmaq_laneq_f32_riscv(_sum10, _pA0, _pB0, 1);
+                _sum11 = vfmaq_laneq_f32_riscv(_sum11, _pA1, _pB0, 1);
 
                 pA += 8;
                 pB += 2;
@@ -1071,10 +1071,10 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pA0 = vle32_v_f32m1(pA, VL);
                 vfloat32m1_t _pA1 = vle32_v_f32m1(pA + 4, VL);
 
-                vfloat32m1_t _pB = vld1q_dup_f32(pB);
+                vfloat32m1_t _pB = vdupq_n_f32_riscv(pB[0]);
 
-                _sum00 = vfmaq_f32(_sum00, _pA0, _pB);
-                _sum01 = vfmaq_f32(_sum01, _pA1, _pB);
+                _sum00 = vfmadd_vv_f32m1(_pA0, _pB, _sum00, VL);
+                _sum01 = vfmadd_vv_f32m1(_pA1, _pB, _sum01, VL);
 
                 pA += 8;
                 pB += 1;
@@ -1625,10 +1625,10 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             for (; kk < max_kk; kk += 1)
             {
                 vfloat32m1_t _pA = vle32_v_f32m1(pA, VL);
-                float32x2_t _pB = vld1_f32(pB);
+                vfloat32m1_t _pB = vle32_v_f32m1(pB, VL / 2);
 
-                _sum0 = vfmaq_lane_f32(_sum0, _pA, _pB, 0);
-                _sum1 = vfmaq_lane_f32(_sum1, _pA, _pB, 1);
+                _sum0 = vfmaq_laneq_f32_riscv(_sum0, _pA, _pB, 0);
+                _sum1 = vfmaq_laneq_f32_riscv(_sum1, _pA, _pB, 1);
 
 
                 pA += 4;
@@ -1711,7 +1711,7 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pA = vle32_v_f32m1(pA, VL);
                 vfloat32m1_t _pB = vdupq_n_f32_riscv(pB[0]);
 
-                _sum0 = vfmaq_f32(_sum0, _pA, _pB);
+                _sum0 = vfmadd_vv_f32m1(_pA, _pB, _sum0, VL);
 
                 pA += 4;
                 pB += 1;
@@ -1805,15 +1805,15 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                     }
                     if (broadcast_type_C == 3)
                     {
-                        float32x4x2_t _tmp01 = vld2q_f32(pC);
-                        float32x4x2_t _tmp23 = vld2q_f32(pC + 8);
-                        float32x4x2_t _tmp45 = vld2q_f32(pC + 16);
-                        _sum00 = vget_f32m1x4_f32m1(_tmp01, 0);
-                        _sum01 = vget_f32m1x4_f32m1(_tmp23, 0);
-                        _sum02 = vget_f32m1x4_f32m1(_tmp45, 0);
-                        _sum10 = vget_f32m1x4_f32m1(_tmp01, 1);
-                        _sum11 = vget_f32m1x4_f32m1(_tmp23, 1);
-                        _sum12 = vget_f32m1x4_f32m1(_tmp45, 1);
+                        vfloat32m1x2_t _tmp01 = vlseg2e32_v_f32m1x2(pC, VL);
+                        vfloat32m1x2_t _tmp23 = vlseg2e32_v_f32m1x2(pC + 8, VL);
+                        vfloat32m1x2_t _tmp45 = vlseg2e32_v_f32m1x2(pC + 16, VL);
+                        _sum00 = vget_f32m1x2_f32m1(_tmp01, 0);
+                        _sum01 = vget_f32m1x2_f32m1(_tmp23, 0);
+                        _sum02 = vget_f32m1x2_f32m1(_tmp45, 0);
+                        _sum10 = vget_f32m1x2_f32m1(_tmp01, 1);
+                        _sum11 = vget_f32m1x2_f32m1(_tmp23, 1);
+                        _sum12 = vget_f32m1x2_f32m1(_tmp45, 1);
                         pC += 24;
                     }
                     if (broadcast_type_C == 4)
@@ -1830,15 +1830,15 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             }
             else
             {
-                float32x4x2_t _tmp01 = vld2q_f32(outptr);
-                float32x4x2_t _tmp23 = vld2q_f32(outptr + 8);
-                float32x4x2_t _tmp45 = vld2q_f32(outptr + 16);
-                _sum00 = vget_f32m1x4_f32m1(_tmp01, 0);
-                _sum01 = vget_f32m1x4_f32m1(_tmp23, 0);
-                _sum02 = vget_f32m1x4_f32m1(_tmp45, 0);
-                _sum10 = vget_f32m1x4_f32m1(_tmp01, 1);
-                _sum11 = vget_f32m1x4_f32m1(_tmp23, 1);
-                _sum12 = vget_f32m1x4_f32m1(_tmp45, 1);
+                vfloat32m1x2_t _tmp01 = vlseg2e32_v_f32m1x2(outptr, VL);
+                vfloat32m1x2_t _tmp23 = vlseg2e32_v_f32m1x2(outptr + 8, VL);
+                vfloat32m1x2_t _tmp45 = vlseg2e32_v_f32m1x2(outptr + 16, VL);
+                _sum00 = vget_f32m1x2_f32m1(_tmp01, 0);
+                _sum01 = vget_f32m1x2_f32m1(_tmp23, 0);
+                _sum02 = vget_f32m1x2_f32m1(_tmp45, 0);
+                _sum10 = vget_f32m1x2_f32m1(_tmp01, 1);
+                _sum11 = vget_f32m1x2_f32m1(_tmp23, 1);
+                _sum12 = vget_f32m1x2_f32m1(_tmp45, 1);
             }
 
             const float* pA = pAT;
@@ -1849,14 +1849,14 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pB1 = vle32_v_f32m1(pB + 4, VL);
                 vfloat32m1_t _pB2 = vle32_v_f32m1(pB + 8, VL);
 
-                float32x2_t _pA = vld1_f32(pA);
+                vfloat32m1_t _pA = vle32_v_f32m1(pA, VL / 2);
 
-                _sum00 = vfmaq_lane_f32(_sum00, _pB0, _pA, 0);
-                _sum01 = vfmaq_lane_f32(_sum01, _pB1, _pA, 0);
-                _sum02 = vfmaq_lane_f32(_sum02, _pB2, _pA, 0);
-                _sum10 = vfmaq_lane_f32(_sum10, _pB0, _pA, 1);
-                _sum11 = vfmaq_lane_f32(_sum11, _pB1, _pA, 1);
-                _sum12 = vfmaq_lane_f32(_sum12, _pB2, _pA, 1);
+                _sum00 = vfmaq_laneq_f32_riscv(_sum00, _pB0, _pA, 0);
+                _sum01 = vfmaq_laneq_f32_riscv(_sum01, _pB1, _pA, 0);
+                _sum02 = vfmaq_laneq_f32_riscv(_sum02, _pB2, _pA, 0);
+                _sum10 = vfmaq_laneq_f32_riscv(_sum10, _pB0, _pA, 1);
+                _sum11 = vfmaq_laneq_f32_riscv(_sum11, _pB1, _pA, 1);
+                _sum12 = vfmaq_laneq_f32_riscv(_sum12, _pB2, _pA, 1);
 
                 pA += 2;
                 pB += 12;
@@ -1877,18 +1877,21 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             }
             else
             {
-                float32x4x2_t _tmp01;
-                vget_f32m1x4_f32m1(_tmp01, 0) = _sum00;
-                vget_f32m1x4_f32m1(_tmp01, 1) = _sum10;
-                float32x4x2_t _tmp23;
-                vget_f32m1x4_f32m1(_tmp23, 0) = _sum01;
-                vget_f32m1x4_f32m1(_tmp23, 1) = _sum11;
-                float32x4x2_t _tmp45;
-                vget_f32m1x4_f32m1(_tmp45, 0) = _sum02;
-                vget_f32m1x4_f32m1(_tmp45, 1) = _sum12;
-                vst2q_f32(outptr, _tmp01);
-                vst2q_f32(outptr + 8, _tmp23);
-                vst2q_f32(outptr + 16, _tmp45);
+                // vfloat32m1x2_t _tmp01;
+                // vget_f32m1x4_f32m1(_tmp01, 0) = _sum00;
+                // vget_f32m1x4_f32m1(_tmp01, 1) = _sum10;
+                // vfloat32m1x2_t _tmp23;
+                // vget_f32m1x4_f32m1(_tmp23, 0) = _sum01;
+                // vget_f32m1x4_f32m1(_tmp23, 1) = _sum11;
+                // vfloat32m1x2_t _tmp45;
+                // vget_f32m1x4_f32m1(_tmp45, 0) = _sum02;
+                // vget_f32m1x4_f32m1(_tmp45, 1) = _sum12;
+                // vst2q_f32(outptr, _tmp01);
+                // vst2q_f32(outptr + 8, _tmp23);
+                // vst2q_f32(outptr + 16, _tmp45);
+                store_float32_v2(_sum00, _sum10, outptr);
+                store_float32_v2(_sum01, _sum11, outptr + 8);
+                store_float32_v2(_sum02, _sum12, outptr + 16);
             }
 
             outptr += 24;
@@ -1925,12 +1928,12 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                     }
                     if (broadcast_type_C == 3)
                     {
-                        float32x4x2_t _tmp01 = vld2q_f32(pC);
-                        float32x4x2_t _tmp23 = vld2q_f32(pC + 8);
-                        _sum00 = vget_f32m1x4_f32m1(_tmp01, 0);
-                        _sum01 = vget_f32m1x4_f32m1(_tmp23, 0);
-                        _sum10 = vget_f32m1x4_f32m1(_tmp01, 1);
-                        _sum11 = vget_f32m1x4_f32m1(_tmp23, 1);
+                        vfloat32m1x2_t _tmp01 = vlseg2e32_v_f32m1x2(pC, VL);
+                        vfloat32m1x2_t _tmp23 = vlseg2e32_v_f32m1x2(pC + 8, VL);
+                        _sum00 = vget_f32m1x2_f32m1(_tmp01, 0);
+                        _sum01 = vget_f32m1x2_f32m1(_tmp23, 0);
+                        _sum10 = vget_f32m1x2_f32m1(_tmp01, 1);
+                        _sum11 = vget_f32m1x2_f32m1(_tmp23, 1);
                         pC += 16;
                     }
                     if (broadcast_type_C == 4)
@@ -1945,12 +1948,12 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             }
             else
             {
-                float32x4x2_t _tmp01 = vld2q_f32(outptr);
-                float32x4x2_t _tmp23 = vld2q_f32(outptr + 8);
-                _sum00 = vget_f32m1x4_f32m1(_tmp01, 0);
-                _sum01 = vget_f32m1x4_f32m1(_tmp23, 0);
-                _sum10 = vget_f32m1x4_f32m1(_tmp01, 1);
-                _sum11 = vget_f32m1x4_f32m1(_tmp23, 1);
+                vfloat32m1x2_t _tmp01 = vlseg2e32_v_f32m1x2(outptr, VL);
+                vfloat32m1x2_t _tmp23 = vlseg2e32_v_f32m1x2(outptr + 8, VL);
+                _sum00 = vget_f32m1x2_f32m1(_tmp01, 0);
+                _sum01 = vget_f32m1x2_f32m1(_tmp23, 0);
+                _sum10 = vget_f32m1x2_f32m1(_tmp01, 1);
+                _sum11 = vget_f32m1x2_f32m1(_tmp23, 1);
             }
 
             const float* pA = pAT;
@@ -1960,11 +1963,11 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pB0 = vle32_v_f32m1(pB, VL);
                 vfloat32m1_t _pB1 = vle32_v_f32m1(pB + 4, VL);
 
-                float32x2_t _pA = vld1_f32(pA);
-                _sum00 = vfmaq_lane_f32(_sum00, _pB0, _pA, 0);
-                _sum01 = vfmaq_lane_f32(_sum01, _pB1, _pA, 0);
-                _sum10 = vfmaq_lane_f32(_sum10, _pB0, _pA, 1);
-                _sum11 = vfmaq_lane_f32(_sum11, _pB1, _pA, 1);
+                vfloat32m1_t _pA = vle32_v_f32m1(pA, VL / 2);
+                _sum00 = vfmaq_laneq_f32_riscv(_sum00, _pB0, _pA, 0);
+                _sum01 = vfmaq_laneq_f32_riscv(_sum01, _pB1, _pA, 0);
+                _sum10 = vfmaq_laneq_f32_riscv(_sum10, _pB0, _pA, 1);
+                _sum11 = vfmaq_laneq_f32_riscv(_sum11, _pB1, _pA, 1);
                 pA += 2;
                 pB += 8;
             }
@@ -1982,14 +1985,16 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             }
             else
             {
-                float32x4x2_t _tmp01;
-                vget_f32m1x4_f32m1(_tmp01, 0) = _sum00;
-                vget_f32m1x4_f32m1(_tmp01, 1) = _sum10;
-                float32x4x2_t _tmp23;
-                vget_f32m1x4_f32m1(_tmp23, 0) = _sum01;
-                vget_f32m1x4_f32m1(_tmp23, 1) = _sum11;
-                vst2q_f32(outptr, _tmp01);
-                vst2q_f32(outptr + 8, _tmp23);
+                // vfloat32m1x2_t _tmp01;
+                // vget_f32m1x4_f32m1(_tmp01, 0) = _sum00;
+                // vget_f32m1x4_f32m1(_tmp01, 1) = _sum10;
+                // vfloat32m1x2_t _tmp23;
+                // vget_f32m1x4_f32m1(_tmp23, 0) = _sum01;
+                // vget_f32m1x4_f32m1(_tmp23, 1) = _sum11;
+                // vst2q_f32(outptr, _tmp01);
+                // vst2q_f32(outptr + 8, _tmp23);
+                store_float32_v2(_sum00, _sum10, outptr);
+                store_float32_v2(_sum01, _sum11, outptr + 8);
             }
 
             outptr += 16;
@@ -2018,9 +2023,9 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                     }
                     if (broadcast_type_C == 3)
                     {
-                        float32x4x2_t _tmp01 = vld2q_f32(pC);
-                        _sum0 = vget_f32m1x4_f32m1(_tmp01, 0);
-                        _sum1 = vget_f32m1x4_f32m1(_tmp01, 1);
+                        vfloat32m1x2_t _tmp01 = vlseg2e32_v_f32m1x2(pC, VL);
+                        _sum0 = vget_f32m1x2_f32m1(_tmp01, 0);
+                        _sum1 = vget_f32m1x2_f32m1(_tmp01, 1);
                         pC += 8;
                     }
                     if (broadcast_type_C == 4)
@@ -2033,9 +2038,9 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             }
             else
             {
-                float32x4x2_t _tmp01 = vld2q_f32(outptr);
-                _sum0 = vget_f32m1x4_f32m1(_tmp01, 0);
-                _sum1 = vget_f32m1x4_f32m1(_tmp01, 1);
+                vfloat32m1x2_t _tmp01 = vlseg2e32_v_f32m1x2(outptr, VL);
+                _sum0 = vget_f32m1x2_f32m1(_tmp01, 0);
+                _sum1 = vget_f32m1x2_f32m1(_tmp01, 1);
             }
 
             const float* pA = pAT;
@@ -2044,9 +2049,9 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             {
                 vfloat32m1_t _pB = vle32_v_f32m1(pB, VL);
 
-                float32x2_t _pA = vld1_f32(pA);
-                _sum0 = vfmaq_lane_f32(_sum0, _pB, _pA, 0);
-                _sum1 = vfmaq_lane_f32(_sum1, _pB, _pA, 1);
+                vfloat32m1_t _pA = vle32_v_f32m1(pA, VL / 2);
+                _sum0 = vfmaq_laneq_f32_riscv(_sum0, _pB, _pA, 0);
+                _sum1 = vfmaq_laneq_f32_riscv(_sum1, _pB, _pA, 1);
 
 
                 pA += 2;
@@ -2064,10 +2069,11 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
             }
             else
             {
-                float32x4x2_t _tmp01;
-                vget_f32m1x4_f32m1(_tmp01, 0) = _sum0;
-                vget_f32m1x4_f32m1(_tmp01, 1) = _sum1;
-                vst2q_f32(outptr, _tmp01);
+                // vfloat32m1x2_t _tmp01;
+                // vget_f32m1x2_f32m1(_tmp01, 0) = _sum0;
+                // vget_f32m1x2_f32m1(_tmp01, 1) = _sum1;
+                // vst2q_f32(outptr, _tmp01);
+                store_float32_v2(_sum0, _sum1, outptr);
             }
 
             outptr += 8;
@@ -2300,9 +2306,9 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
 
                 vfloat32m1_t _pA0 = vdupq_n_f32_riscv(pA[0]);
 
-                _sum0 = vfmaq_f32(_sum0, _pA0, _pB0);
-                _sum1 = vfmaq_f32(_sum1, _pA0, _pB1);
-                _sum2 = vfmaq_f32(_sum2, _pA0, _pB2);
+                _sum0 = vfmadd_vv_f32m1(_pA0, _pB0, _sum0, VL);
+                _sum1 = vfmadd_vv_f32m1(_pA0, _pB1, _sum1, VL);
+                _sum2 = vfmadd_vv_f32m1(_pA0, _pB2, _sum2, VL);
 
                 pA += 1;
                 pB += 12;
@@ -2366,8 +2372,8 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pB1 = vle32_v_f32m1(pB + 4, VL);
 
                 vfloat32m1_t _pA0 = vdupq_n_f32_riscv(pA[0]);
-                _sum0 = vfmaq_f32(_sum0, _pA0, _pB0);
-                _sum1 = vfmaq_f32(_sum1, _pA0, _pB1);
+                _sum0 = vfmadd_vv_f32m1(_pA0, _pB0, _sum0, VL);
+                _sum1 = vfmadd_vv_f32m1(_pA0, _pB1, _sum1, VL);
 
 
                 pA += 1;
@@ -2424,7 +2430,7 @@ static void gemm_transB_packed_tile(const Mat& AT_tile, const Mat& BT_tile, cons
                 vfloat32m1_t _pB = vle32_v_f32m1(pB, VL);
                 vfloat32m1_t _pA = vdupq_n_f32_riscv(pA[0]);
 
-                _sum = vfmaq_f32(_sum, _pA, _pB);
+                _sum = vfmadd_vv_f32m1(_pA, _pB, _sum, VL);
 
                 pA += 1;
                 pB += 4;
