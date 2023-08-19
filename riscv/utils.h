@@ -56,7 +56,7 @@ bool check_Mat(Mat& correct, Mat& test) {
     return true;
 }
 
-vfloat32m1_t vfmaq_laneq_f32(vfloat32m1_t sum, vfloat32m1_t a, vfloat32m1_t b, int lane) {
+vfloat32m1_t vfmaq_laneq_f32_riscv(vfloat32m1_t sum, vfloat32m1_t a, vfloat32m1_t b, int lane) {
     float t[4];
     vse32_v_f32m1(t, b, 4);
     vfloat32m1_t ret = vfmadd_vf_f32m1(
@@ -64,7 +64,7 @@ vfloat32m1_t vfmaq_laneq_f32(vfloat32m1_t sum, vfloat32m1_t a, vfloat32m1_t b, i
     return ret;     
 }
 
-vfloat32m1_t vdupq_n_f32(float32_t f) {
+vfloat32m1_t vdupq_n_f32_riscv(float32_t f) {
     return vfmv_v_f_f32m1(f, 4);
 }
 
