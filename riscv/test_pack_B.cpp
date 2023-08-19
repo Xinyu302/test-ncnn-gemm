@@ -242,9 +242,9 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
 
             for (int kk = 0; kk < max_kk; kk++)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
-                vst1q_f32(pp + 4, vld1q_f32(p1));
-                vst1q_f32(pp + 8, vld1q_f32(p2));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
+                vse32_v_f32m1(pp + 4, vle32_v_f32m1(p1, VL), VL);
+                vse32_v_f32m1(pp + 8, vle32_v_f32m1(p2, VL), VL);
                 pp += 12;
                 p0 += 4;
                 p1 += 4;
@@ -269,35 +269,35 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4_t _r0 = vld1q_f32(p0);
-                float32x4_t _r1 = vld1q_f32(p1);
-                float32x4_t _r2 = vld1q_f32(p2);
-                float32x4_t _r3 = vld1q_f32(p3);
-                float32x4_t _r4 = vld1q_f32(p4);
-                float32x4_t _r5 = vld1q_f32(p5);
-                float32x4_t _r6 = vld1q_f32(p6);
-                float32x4_t _r7 = vld1q_f32(p7);
-                float32x4_t _r8 = vld1q_f32(p8);
-                float32x4_t _r9 = vld1q_f32(p9);
-                float32x4_t _ra = vld1q_f32(pa);
-                float32x4_t _rb = vld1q_f32(pb);
+                vfloat32m1_t _r0 = vle32_v_f32m1(p0, VL);
+                vfloat32m1_t _r1 = vle32_v_f32m1(p1, VL);
+                vfloat32m1_t _r2 = vle32_v_f32m1(p2, VL);
+                vfloat32m1_t _r3 = vle32_v_f32m1(p3, VL);
+                vfloat32m1_t _r4 = vle32_v_f32m1(p4, VL);
+                vfloat32m1_t _r5 = vle32_v_f32m1(p5, VL);
+                vfloat32m1_t _r6 = vle32_v_f32m1(p6, VL);
+                vfloat32m1_t _r7 = vle32_v_f32m1(p7, VL);
+                vfloat32m1_t _r8 = vle32_v_f32m1(p8, VL);
+                vfloat32m1_t _r9 = vle32_v_f32m1(p9, VL);
+                vfloat32m1_t _ra = vle32_v_f32m1(pa, VL);
+                vfloat32m1_t _rb = vle32_v_f32m1(pb, VL);
 
                 transpose4x4_ps(_r0, _r1, _r2, _r3);
                 transpose4x4_ps(_r4, _r5, _r6, _r7);
                 transpose4x4_ps(_r8, _r9, _ra, _rb);
 
-                vst1q_f32(pp, _r0);
-                vst1q_f32(pp + 4, _r4);
-                vst1q_f32(pp + 4 * 2, _r8);
-                vst1q_f32(pp + 4 * 3, _r1);
-                vst1q_f32(pp + 4 * 4, _r5);
-                vst1q_f32(pp + 4 * 5, _r9);
-                vst1q_f32(pp + 4 * 6, _r2);
-                vst1q_f32(pp + 4 * 7, _r6);
-                vst1q_f32(pp + 4 * 8, _ra);
-                vst1q_f32(pp + 4 * 9, _r3);
-                vst1q_f32(pp + 4 * 10, _r7);
-                vst1q_f32(pp + 4 * 11, _rb);
+                vse32_v_f32m1(pp, _r0, VL);
+                vse32_v_f32m1(pp + 4, _r4, VL);
+                vse32_v_f32m1(pp + 4 * 2, _r8, VL);
+                vse32_v_f32m1(pp + 4 * 3, _r1, VL);
+                vse32_v_f32m1(pp + 4 * 4, _r5, VL);
+                vse32_v_f32m1(pp + 4 * 5, _r9, VL);
+                vse32_v_f32m1(pp + 4 * 6, _r2, VL);
+                vse32_v_f32m1(pp + 4 * 7, _r6, VL);
+                vse32_v_f32m1(pp + 4 * 8, _ra, VL);
+                vse32_v_f32m1(pp + 4 * 9, _r3, VL);
+                vse32_v_f32m1(pp + 4 * 10, _r7, VL);
+                vse32_v_f32m1(pp + 4 * 11, _rb, VL);
                 pp += 48;
                 p0 += 4;
                 p1 += 4;
@@ -351,8 +351,8 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
 
             for (int kk = 0; kk < max_kk; kk++)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
-                vst1q_f32(pp + 4, vld1q_f32(p1));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
+                vse32_v_f32m1(pp + 4, vle32_v_f32m1(p1, VL), VL);
                 pp += 8;
                 p0 += 4;
                 p1 += 4;
@@ -372,26 +372,26 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4_t _r0 = vld1q_f32(p0);
-                float32x4_t _r1 = vld1q_f32(p1);
-                float32x4_t _r2 = vld1q_f32(p2);
-                float32x4_t _r3 = vld1q_f32(p3);
-                float32x4_t _r4 = vld1q_f32(p4);
-                float32x4_t _r5 = vld1q_f32(p5);
-                float32x4_t _r6 = vld1q_f32(p6);
-                float32x4_t _r7 = vld1q_f32(p7);
+                vfloat32m1_t _r0 = vle32_v_f32m1(p0, VL);
+                vfloat32m1_t _r1 = vle32_v_f32m1(p1, VL);
+                vfloat32m1_t _r2 = vle32_v_f32m1(p2, VL);
+                vfloat32m1_t _r3 = vle32_v_f32m1(p3, VL);
+                vfloat32m1_t _r4 = vle32_v_f32m1(p4, VL);
+                vfloat32m1_t _r5 = vle32_v_f32m1(p5, VL);
+                vfloat32m1_t _r6 = vle32_v_f32m1(p6, VL);
+                vfloat32m1_t _r7 = vle32_v_f32m1(p7, VL);
 
                 transpose4x4_ps(_r0, _r1, _r2, _r3);
                 transpose4x4_ps(_r4, _r5, _r6, _r7);
 
-                vst1q_f32(pp, _r0);
-                vst1q_f32(pp + 4, _r4);
-                vst1q_f32(pp + 4 * 2, _r1);
-                vst1q_f32(pp + 4 * 3, _r5);
-                vst1q_f32(pp + 4 * 4, _r2);
-                vst1q_f32(pp + 4 * 5, _r6);
-                vst1q_f32(pp + 4 * 6, _r3);
-                vst1q_f32(pp + 4 * 7, _r7);
+                vse32_v_f32m1(pp, _r0, VL);
+                vse32_v_f32m1(pp + 4, _r4, VL);
+                vse32_v_f32m1(pp + 4 * 2, _r1, VL);
+                vse32_v_f32m1(pp + 4 * 3, _r5, VL);
+                vse32_v_f32m1(pp + 4 * 4, _r2, VL);
+                vse32_v_f32m1(pp + 4 * 5, _r6, VL);
+                vse32_v_f32m1(pp + 4 * 6, _r3, VL);
+                vse32_v_f32m1(pp + 4 * 7, _r7, VL);
                 pp += 32;
                 p0 += 4;
                 p1 += 4;
@@ -432,7 +432,7 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
 
             for (int kk = 0; kk < max_kk; kk++)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
                 pp += 4;
                 p0 += 4;
             }
@@ -447,12 +447,13 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x4_t _r0123;
-                _r0123.val[0] = vld1q_f32(p0);
-                _r0123.val[1] = vld1q_f32(p1);
-                _r0123.val[2] = vld1q_f32(p2);
-                _r0123.val[3] = vld1q_f32(p3);
-                vst4q_f32(pp, _r0123);
+                // vfloat32m1x4_t _r0123;
+                // vget_f32m1x4_f32m1(_r0123, 0) = vle32_v_f32m1(p0, VL);
+                // vget_f32m1x4_f32m1(_r0123, 1) = vle32_v_f32m1(p1, VL);
+                // vget_f32m1x4_f32m1(_r0123, 2) = vle32_v_f32m1(p2, VL);
+                // vget_f32m1x4_f32m1(_r0123, 3) = vle32_v_f32m1(p3, VL);
+                // vst4q_f32(pp, _r0123);
+                store_float_v4(vle32_v_f32m1(p0, VL), vle32_v_f32m1(p1, VL), vle32_v_f32m1(p2, VL), vle32_v_f32m1(p3, VL), pp);
                 pp += 16;
                 p0 += 4;
                 p1 += 4;
@@ -483,10 +484,11 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x2_t _r01;
-                _r01.val[0] = vld1q_f32(p0);
-                _r01.val[1] = vld1q_f32(p1);
-                vst2q_f32(pp, _r01);
+                // float32x4x2_t _r01;
+                // vget_f32m1x4_f32m1(_r01, 0) = vle32_v_f32m1(p0, VL);
+                // vget_f32m1x4_f32m1(_r01, 1) = vle32_v_f32m1(p1, VL);
+                // vst2q_f32(pp, _r01);
+                store_float32_v2(vle32_v_f32m1(p0, VL), vle32_v_f32m1(p1, VL), pp);
                 pp += 8;
                 p0 += 4;
                 p1 += 4;
@@ -510,7 +512,7 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
                 pp += 4;
                 p0 += 4;
             }
@@ -541,21 +543,21 @@ static void transpose_pack_B_tile_naive(const Mat& B, Mat& BT, int j, int max_jj
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                // float32x4x4_t _r0123 = vld4q_f32(p0);
-                // float32x4x4_t _r4567 = vld4q_f32(p0 + 16);
-                // float32x4x4_t _r89ab = vld4q_f32(p0 + 32);
-                // vst1q_f32(pp, _r0123.val[0]);
-                // vst1q_f32(pp + 4, _r4567.val[0]);
-                // vst1q_f32(pp + 4 * 2, _r89ab.val[0]);
-                // vst1q_f32(pp + 4 * 3, _r0123.val[1]);
-                // vst1q_f32(pp + 4 * 4, _r4567.val[1]);
-                // vst1q_f32(pp + 4 * 5, _r89ab.val[1]);
-                // vst1q_f32(pp + 4 * 6, _r0123.val[2]);
-                // vst1q_f32(pp + 4 * 7, _r4567.val[2]);
-                // vst1q_f32(pp + 4 * 8, _r89ab.val[2]);
-                // vst1q_f32(pp + 4 * 9, _r0123.val[3]);
-                // vst1q_f32(pp + 4 * 10, _r4567.val[3]);
-                // vst1q_f32(pp + 4 * 11, _r89ab.val[3]);
+                // vfloat32m1x4_t _r0123 = vlseg4e32_v_f32m1x4(p0, VL);
+                // vfloat32m1x4_t _r4567 = vlseg4e32_v_f32m1x4(p0 + 16, VL);
+                // vfloat32m1x4_t _r89ab = vlseg4e32_v_f32m1x4(p0 + 32, VL);
+                // vse32_v_f32m1(pp, vget_f32m1x4_f32m1(_r0123, 0), VL);
+                // vse32_v_f32m1(pp + 4, vget_f32m1x4_f32m1(_r4567, 0), VL);
+                // vse32_v_f32m1(pp + 4 * 2, vget_f32m1x4_f32m1(_r89ab, 0), VL);
+                // vse32_v_f32m1(pp + 4 * 3, vget_f32m1x4_f32m1(_r0123, 1), VL);
+                // vse32_v_f32m1(pp + 4 * 4, vget_f32m1x4_f32m1(_r4567, 1), VL);
+                // vse32_v_f32m1(pp + 4 * 5, vget_f32m1x4_f32m1(_r89ab, 1), VL);
+                // vse32_v_f32m1(pp + 4 * 6, vget_f32m1x4_f32m1(_r0123, 2), VL);
+                // vse32_v_f32m1(pp + 4 * 7, vget_f32m1x4_f32m1(_r4567, 2), VL);
+                // vse32_v_f32m1(pp + 4 * 8, vget_f32m1x4_f32m1(_r89ab, 2), VL);
+                // vse32_v_f32m1(pp + 4 * 9, vget_f32m1x4_f32m1(_r0123, 3), VL);
+                // vse32_v_f32m1(pp + 4 * 10, vget_f32m1x4_f32m1(_r4567, 3), VL);
+                // vse32_v_f32m1(pp + 4 * 11, vget_f32m1x4_f32m1(_r89ab, 3), VL);
                 pp[0] = p0[0];
                 pp[1] = p0[1];
                 pp[2] = p0[2];
@@ -739,7 +741,6 @@ static void transpose_pack_B_tile_naive(const Mat& B, Mat& BT, int j, int max_jj
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x2_t _r01;
                 for (int iter = 0; iter < 8; iter++) {
                     pp[iter] = p0[iter];
                 }
@@ -809,21 +810,21 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x4_t _r0123 = vld4q_f32(p0);
-                float32x4x4_t _r4567 = vld4q_f32(p0 + 16);
-                float32x4x4_t _r89ab = vld4q_f32(p0 + 32);
-                vst1q_f32(pp, _r0123.val[0]);
-                vst1q_f32(pp + 4, _r4567.val[0]);
-                vst1q_f32(pp + 4 * 2, _r89ab.val[0]);
-                vst1q_f32(pp + 4 * 3, _r0123.val[1]);
-                vst1q_f32(pp + 4 * 4, _r4567.val[1]);
-                vst1q_f32(pp + 4 * 5, _r89ab.val[1]);
-                vst1q_f32(pp + 4 * 6, _r0123.val[2]);
-                vst1q_f32(pp + 4 * 7, _r4567.val[2]);
-                vst1q_f32(pp + 4 * 8, _r89ab.val[2]);
-                vst1q_f32(pp + 4 * 9, _r0123.val[3]);
-                vst1q_f32(pp + 4 * 10, _r4567.val[3]);
-                vst1q_f32(pp + 4 * 11, _r89ab.val[3]);
+                vfloat32m1x4_t _r0123 = vlseg4e32_v_f32m1x4(p0, VL);
+                vfloat32m1x4_t _r4567 = vlseg4e32_v_f32m1x4(p0 + 16, VL);
+                vfloat32m1x4_t _r89ab = vlseg4e32_v_f32m1x4(p0 + 32, VL);
+                vse32_v_f32m1(pp, vget_f32m1x4_f32m1(_r0123, 0), VL);
+                vse32_v_f32m1(pp + 4, vget_f32m1x4_f32m1(_r4567, 0), VL);
+                vse32_v_f32m1(pp + 4 * 2, vget_f32m1x4_f32m1(_r89ab, 0), VL);
+                vse32_v_f32m1(pp + 4 * 3, vget_f32m1x4_f32m1(_r0123, 1), VL);
+                vse32_v_f32m1(pp + 4 * 4, vget_f32m1x4_f32m1(_r4567, 1), VL);
+                vse32_v_f32m1(pp + 4 * 5, vget_f32m1x4_f32m1(_r89ab, 1), VL);
+                vse32_v_f32m1(pp + 4 * 6, vget_f32m1x4_f32m1(_r0123, 2), VL);
+                vse32_v_f32m1(pp + 4 * 7, vget_f32m1x4_f32m1(_r4567, 2), VL);
+                vse32_v_f32m1(pp + 4 * 8, vget_f32m1x4_f32m1(_r89ab, 2), VL);
+                vse32_v_f32m1(pp + 4 * 9, vget_f32m1x4_f32m1(_r0123, 3), VL);
+                vse32_v_f32m1(pp + 4 * 10, vget_f32m1x4_f32m1(_r4567, 3), VL);
+                vse32_v_f32m1(pp + 4 * 11, vget_f32m1x4_f32m1(_r89ab, 3), VL);
                 pp += 48;
                 p0 += B_hstep * 4;
             }
@@ -835,9 +836,9 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk < max_kk; kk++)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
-                vst1q_f32(pp + 4, vld1q_f32(p0 + 4));
-                vst1q_f32(pp + 8, vld1q_f32(p0 + 8));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
+                vse32_v_f32m1(pp + 4, vle32_v_f32m1(p0 + 4, VL), VL);
+                vse32_v_f32m1(pp + 8, vle32_v_f32m1(p0 + 8, VL), VL);
                 pp += 12;
                 p0 += B_hstep;
             }
@@ -852,16 +853,16 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x4_t _r0123 = vld4q_f32(p0);
-                float32x4x4_t _r4567 = vld4q_f32(p0 + 16);
-                vst1q_f32(pp, _r0123.val[0]);
-                vst1q_f32(pp + 4, _r4567.val[0]);
-                vst1q_f32(pp + 4 * 2, _r0123.val[1]);
-                vst1q_f32(pp + 4 * 3, _r4567.val[1]);
-                vst1q_f32(pp + 4 * 4, _r0123.val[2]);
-                vst1q_f32(pp + 4 * 5, _r4567.val[2]);
-                vst1q_f32(pp + 4 * 6, _r0123.val[3]);
-                vst1q_f32(pp + 4 * 7, _r4567.val[3]);
+                vfloat32m1x4_t _r0123 = vlseg4e32_v_f32m1x4(p0, VL);
+                vfloat32m1x4_t _r4567 = vlseg4e32_v_f32m1x4(p0 + 16, VL);
+                vse32_v_f32m1(pp, vget_f32m1x4_f32m1(_r0123, 0), VL);
+                vse32_v_f32m1(pp + 4, vget_f32m1x4_f32m1(_r4567, 0), VL);
+                vse32_v_f32m1(pp + 4 * 2, vget_f32m1x4_f32m1(_r0123, 1), VL);
+                vse32_v_f32m1(pp + 4 * 3, vget_f32m1x4_f32m1(_r4567, 1), VL);
+                vse32_v_f32m1(pp + 4 * 4, vget_f32m1x4_f32m1(_r0123, 2), VL);
+                vse32_v_f32m1(pp + 4 * 5, vget_f32m1x4_f32m1(_r4567, 2), VL);
+                vse32_v_f32m1(pp + 4 * 6, vget_f32m1x4_f32m1(_r0123, 3), VL);
+                vse32_v_f32m1(pp + 4 * 7, vget_f32m1x4_f32m1(_r4567, 3), VL);
                 pp += 32;
                 p0 += B_hstep * 4;
             }
@@ -873,8 +874,8 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk < max_kk; kk++)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
-                vst1q_f32(pp + 4, vld1q_f32(p0 + 4));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
+                vse32_v_f32m1(pp + 4, vle32_v_f32m1(p0 + 4, VL), VL);
                 pp += 8;
                 p0 += B_hstep;
             }
@@ -889,11 +890,11 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x4_t _r0123 = vld4q_f32(p0);
-                vst1q_f32(pp, _r0123.val[0]);
-                vst1q_f32(pp + 4, _r0123.val[1]);
-                vst1q_f32(pp + 4 * 2, _r0123.val[2]);
-                vst1q_f32(pp + 4 * 3, _r0123.val[3]);
+                vfloat32m1x4_t _r0123 = vlseg4e32_v_f32m1x4(p0, VL);
+                vse32_v_f32m1(pp, vget_f32m1x4_f32m1(_r0123, 0), VL);
+                vse32_v_f32m1(pp + 4, vget_f32m1x4_f32m1(_r0123, 1), VL);
+                vse32_v_f32m1(pp + 4 * 2, vget_f32m1x4_f32m1(_r0123, 2), VL);
+                vse32_v_f32m1(pp + 4 * 3, vget_f32m1x4_f32m1(_r0123, 3), VL);
                 pp += 16;
                 p0 += B_hstep * 4;
             }
@@ -905,7 +906,7 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk < max_kk; kk++)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
                 pp += 4;
                 p0 += B_hstep;
             }
@@ -920,10 +921,11 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                float32x4x2_t _r01;
-                _r01.val[0] = vld1q_f32(p0);
-                _r01.val[1] = vld1q_f32(p0 + 4);
-                vst2q_f32(pp, _r01);
+                // float32x4x2_t _r01;
+                // vget_f32m1x4_f32m1(_r01, 0) = vle32_v_f32m1(p0, VL);
+                // vget_f32m1x4_f32m1(_r01, 1) = vle32_v_f32m1(p0 + 4, VL);
+                // vst2q_f32(pp, _r01);
+                store_float32_v2(vle32_v_f32m1(p0, VL), vle32_v_f32m1(p0 + 4, VL), pp);
                 pp += 8;
                 p0 += B_hstep * 4;
             }
@@ -951,7 +953,7 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
             int kk = 0;
             for (; kk + 3 < max_kk; kk += 4)
             {
-                vst1q_f32(pp, vld1q_f32(p0));
+                vse32_v_f32m1(pp, vle32_v_f32m1(p0, VL), VL);
                 pp += 4;
                 p0 += B_hstep * 4;
             }

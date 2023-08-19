@@ -7,7 +7,7 @@ pack_a: test_pack_A.cpp
 run: pack_a
 	qemu-riscv64 -cpu c906fdv ./pack_a
 
-pack_b: test_pack_B.cpp
+pack_b: test_pack_B_handle.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
 runb: pack_b
