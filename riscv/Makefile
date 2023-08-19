@@ -16,6 +16,9 @@ runb: pack_b
 gemm:
 	$(CC) test_gemm_transB_packed_tile.cpp -O3  -c -o $@ $(CXXFLAGS)
 
+transpose:
+	$(CC) test_transpose_unpack_output_tile.cpp -O3  -c -o $@ $(CXXFLAGS)
+
 clean:
 	rm -rf pack_a
 	rm -rf pack_b
