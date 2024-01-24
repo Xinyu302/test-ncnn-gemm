@@ -33,7 +33,7 @@ void print_Mat(Mat& mat) {
     int h = mat.h;
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
-            printf("%f ", data[i * w + j]);
+            printf("%3.0f ", data[i * w + j]);
         }
         printf("\n");
     } 

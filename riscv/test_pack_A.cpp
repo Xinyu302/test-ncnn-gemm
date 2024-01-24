@@ -685,12 +685,14 @@ int main() {
     pack_A_tile_naive(in, out_check, 0, h, 0, w);
 
 #if PRINT_MAT
+    printf("-----------Origin Matrix------------\n");
     print_Mat(in);
     printf("------------------------\n");
+    printf("-----------pack_A_tile------------\n");
     print_Mat(out);
     printf("------------------------\n");
-    print_Mat(out_check);
-    printf("------------------------\n");
+    // print_Mat(out_check);
+    // printf("------------------------\n");
 #endif
 
     if (!check_Mat(out, out_check)) {
@@ -702,6 +704,7 @@ int main() {
     transpose_pack_A_tile(in, out, 0, h, 0, w);
     transpose_pack_A_tile_naive(in, out_check, 0, h, 0, w);
 #if PRINT_MAT
+    printf("------transpose_pack_A_tile------------\n");
     print_Mat(out);
 #endif
     if (!check_Mat(out, out_check)) {
