@@ -11,7 +11,7 @@
 #undef __aarch64__    
 #endif
 
-static void pack_B_tile_naive(const Mat& B, Mat& BT, int j, int max_jj, int k, int max_kk)
+static void pack_B_tile_naive(const Mat<>& B, Mat<>& BT, int j, int max_jj, int k, int max_kk)
 {
     const int elempack = B.elempack;
     const int B_hstep = B.dims == 3 ? (int)B.cstep : B.w;
@@ -224,7 +224,7 @@ static void pack_B_tile_naive(const Mat& B, Mat& BT, int j, int max_jj, int k, i
 }
 
 
-static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max_kk)
+static void pack_B_tile(const Mat<>& B, Mat<>& BT, int j, int max_jj, int k, int max_kk)
 {
     const int elempack = B.elempack;
     const int B_hstep = B.dims == 3 ? (int)B.cstep : B.w;
@@ -282,9 +282,9 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
                 vfloat32m1_t _ra = vle32_v_f32m1(pa, VL);
                 vfloat32m1_t _rb = vle32_v_f32m1(pb, VL);
 
-                transpose4x4_ps(_r0, _r1, _r2, _r3);
-                transpose4x4_ps(_r4, _r5, _r6, _r7);
-                transpose4x4_ps(_r8, _r9, _ra, _rb);
+                transpose4x4_ps(_r0, _r1, _r2, _r3, VL);
+                transpose4x4_ps(_r4, _r5, _r6, _r7, VL);
+                transpose4x4_ps(_r8, _r9, _ra, _rb, VL);
 
                 vse32_v_f32m1(pp, _r0, VL);
                 vse32_v_f32m1(pp + 4, _r4, VL);
@@ -381,8 +381,8 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
                 vfloat32m1_t _r6 = vle32_v_f32m1(p6, VL);
                 vfloat32m1_t _r7 = vle32_v_f32m1(p7, VL);
 
-                transpose4x4_ps(_r0, _r1, _r2, _r3);
-                transpose4x4_ps(_r4, _r5, _r6, _r7);
+                transpose4x4_ps(_r0, _r1, _r2, _r3, VL);
+                transpose4x4_ps(_r4, _r5, _r6, _r7, VL);
 
                 vse32_v_f32m1(pp, _r0, VL);
                 vse32_v_f32m1(pp + 4, _r4, VL);
@@ -526,7 +526,7 @@ static void pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max
     }
 }
 
-static void transpose_pack_B_tile_naive(const Mat& B, Mat& BT, int j, int max_jj, int k, int max_kk)
+static void transpose_pack_B_tile_naive(const Mat<>& B, Mat<>& BT, int j, int max_jj, int k, int max_kk)
 {
     const int elempack = B.elempack;
     const int B_hstep = B.dims == 3 ? (int)B.cstep : B.w;
@@ -793,7 +793,7 @@ static void transpose_pack_B_tile_naive(const Mat& B, Mat& BT, int j, int max_jj
     }
 }
 
-static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int k, int max_kk)
+static void transpose_pack_B_tile(const Mat<>& B, Mat<>& BT, int j, int max_jj, int k, int max_kk)
 {
     const int elempack = B.elempack;
     const int B_hstep = B.dims == 3 ? (int)B.cstep : B.w;
@@ -976,9 +976,9 @@ static void transpose_pack_B_tile(const Mat& B, Mat& BT, int j, int max_jj, int 
 int main()
 {
     int h = 27, w = 27;
-    Mat in;
-    Mat out;
-    Mat out_check;
+    Mat<> in;
+    Mat<> out;
+    Mat<> out_check;
     in.w = w;
     in.h = h;
     out.w = w;

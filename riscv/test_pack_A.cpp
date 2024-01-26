@@ -14,7 +14,7 @@
 
 
 // without arm neon
-void pack_A_tile_naive(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_kk)
+void pack_A_tile_naive(const Mat<>& A, Mat<>& AT, int i, int max_ii, int k, int max_kk)
 {
     const int elempack = A.elempack;
     const int A_hstep = A.dims == 3 ? (int)A.cstep : A.w;
@@ -140,7 +140,7 @@ void pack_A_tile_naive(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_
 }
 
 
-void pack_A_tile(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_kk)
+void pack_A_tile(const Mat<>& A, Mat<>& AT, int i, int max_ii, int k, int max_kk)
 {
     const int elempack = A.elempack;
     const int A_hstep = A.dims == 3 ? (int)A.cstep : A.w;
@@ -194,7 +194,7 @@ void pack_A_tile(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_kk)
                 vfloat32m1_t _r6h = vle32_v_f32m1(p6 + 4, VL);
                 vfloat32m1_t _r7l = vle32_v_f32m1(p7, VL);
                 vfloat32m1_t _r7h = vle32_v_f32m1(p7 + 4, VL);
-                transpose8x8_ps(_r0l, _r0h, _r1l, _r1h, _r2l, _r2h, _r3l, _r3h, _r4l, _r4h, _r5l, _r5h, _r6l, _r6h, _r7l, _r7h);
+                transpose8x8_ps(_r0l, _r0h, _r1l, _r1h, _r2l, _r2h, _r3l, _r3h, _r4l, _r4h, _r5l, _r5h, _r6l, _r6h, _r7l, _r7h, VL);
                 vse32_v_f32m1(pp, _r0l, VL);
                 vse32_v_f32m1(pp + 4, _r0h, VL);
                 vse32_v_f32m1(pp + 8, _r1l, VL);
@@ -346,7 +346,7 @@ void pack_A_tile(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_kk)
     }
 }
 
-static void transpose_pack_A_tile_naive(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_kk) {
+static void transpose_pack_A_tile_naive(const Mat<>& A, Mat<>& AT, int i, int max_ii, int k, int max_kk) {
     const int elempack = A.elempack;
     const int A_hstep = A.dims == 3 ? (int)A.cstep : A.w;
 
@@ -524,7 +524,7 @@ static void transpose_pack_A_tile_naive(const Mat& A, Mat& AT, int i, int max_ii
     }
 }
 
-static void transpose_pack_A_tile(const Mat& A, Mat& AT, int i, int max_ii, int k, int max_kk)
+static void transpose_pack_A_tile(const Mat<>& A, Mat<>& AT, int i, int max_ii, int k, int max_kk)
 {
     const int elempack = A.elempack;
     const int A_hstep = A.dims == 3 ? (int)A.cstep : A.w;
@@ -663,9 +663,9 @@ static void transpose_pack_A_tile(const Mat& A, Mat& AT, int i, int max_ii, int 
 
 int main() {
     int h = 15, w = 15;
-    Mat in;
-    Mat out;
-    Mat out_check;
+    Mat<> in;
+    Mat<> out;
+    Mat<> out_check;
     in.w = w;
     in.h = h;
     out.w = w;

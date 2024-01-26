@@ -1,13 +1,16 @@
 CC=riscv64-unknown-linux-gnu-g++
-CXXFLAGS=-march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c906 -DC906=1 -static
+CXXFLAGS=-march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c906 -DC906=1 -static -std=c++11
 
-ALL: pack_a pack_b
+ALL: pack_a pack_b pack_a_fp32_to_fp16
 
 pack_a: test_pack_A.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
 run: pack_a
 	qemu-riscv64 -cpu c906fdv ./pack_a
+
+pack_a_fp32_to_fp16: test_pack_A_fp32_to_fp16.cpp
+	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
 pack_b: test_pack_B.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
