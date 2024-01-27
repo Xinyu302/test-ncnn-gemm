@@ -125,37 +125,27 @@ static void transpose_pack_A_tile_fp32_to_fp16(const Mat<>& A, Mat<__fp16>& AT, 
 
     int ii = 0;
 #if __riscv_vector
-    int n = max_ii;
-    while (n > 0) {
-        vl = vsetvl_e32m2(n);
-        const float* p0 = (const float*)A + k * A_hstep + (i + ii);
-
-        int kk = 0;
-        for (; kk < max_kk; kk++)
+    // vl = 8;
+    int len = 8;
+    while (len > 0) {
+        for (; ii + len - 1 < max_ii; ii += len)
         {
-            vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
-            vse16_v_f16m1(pp, _r0, vl);
-            pp += vl;
-            p0 += A_hstep;
-        }
-        ii += vl;
-        n -= vl;
-    }
-#else
-    for (; ii < max_ii; ii += 1)
-    {
-        const float* p0 = (const float*)A + k * A_hstep + (i + ii);
+            vl = len;
+            const float* p0 = (const float*)A + k * A_hstep + (i + ii);
 
-        int kk = 0;
-        for (; kk < max_kk; kk++)
-        {
-            pp[0] = float32_to_float16(p0[0]);
-            pp += 1;
-            p0 += A_hstep;
+            int kk = 0;
+            for (; kk < max_kk; kk++)
+            {
+                vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
+                vse16_v_f16m1(pp, _r0, vl);
+                pp += vl;
+                p0 += A_hstep;
+            }
         }
+        len /= 2;
     }
-#endif
 
+#endif // __riscv_vector
 }
 
 int main() {
