@@ -114,6 +114,7 @@ static void pack_A_tile_fp32_to_fp16(const Mat<>& A, Mat<__fp16>& AT, int i, int
             n -= vl;
         }
     }
+#endif // __riscv_vector
 }
 
 static void transpose_pack_A_tile_fp32_to_fp16(const Mat<>& A, Mat<__fp16>& AT, int i, int max_ii, int k, int max_kk)
