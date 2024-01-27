@@ -27,8 +27,9 @@ void init_Mat(Mat& mat) {
     }
 }
 
+template<typename T = float>
 void print_Mat(Mat& mat) {
-    float* data = mat;
+    T* data = mat;
     int w = mat.w;
     int h = mat.h;
     for (int i = 0; i < h; i++) {
