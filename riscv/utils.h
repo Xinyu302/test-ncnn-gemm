@@ -61,6 +61,7 @@ void init_Mat(Mat<T>& mat) {
     T* data = mat;
     int w = mat.w;
     int h = mat.h;
+    printf("in init_Mat, w: %d, h: %d\n", w, h);
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
             data[i * w + j] = i * w + j;
@@ -109,6 +110,10 @@ vfloat32m1_t vfmaq_laneq_f32_riscv(vfloat32m1_t sum, vfloat32m1_t a, vfloat32m1_
 
 vfloat32m1_t vdupq_n_f32_riscv(float32_t f) {
     return vfmv_v_f_f32m1(f, 4);
+}
+
+__fp16 float32_to_float16(float a) {
+    return (__fp16)a;
 }
 
 #define VL 4
@@ -724,6 +729,7 @@ static inline void vlseg2e16_v_u16m4(vuint16m4_t* v0, vuint16m4_t* v1, const uin
     *v1 = vget_u16m4x2_u16m4(_tmp, 1);
 }
 
+#if __riscv_zfh
 
 // f16m1, vsseg.v, 8/4/2
 static inline void vsseg4e16_v_f16mf2(float16_t* base, vfloat16mf2_t v0, vfloat16mf2_t v1, vfloat16mf2_t v2, vfloat16mf2_t v3, size_t vl)
@@ -823,6 +829,10 @@ static inline void vlseg2e16_v_f16m4(vfloat16m4_t* v0, vfloat16m4_t* v1, const f
     *v0 = vget_f16m4x2_f16m4(_tmp, 0);
     *v1 = vget_f16m4x2_f16m4(_tmp, 1);
 }
+
+
+
+#endif // __riscv_zfh
 
 #endif // __riscv_zfh && __rvv_tuple
 
