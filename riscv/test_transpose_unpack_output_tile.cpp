@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "utils.h"
 
-static void transpose_unpack_output_tile(const Mat& topT, Mat& top_blob, int i, int max_ii, int j, int max_jj)
+static void transpose_unpack_output_tile(const Mat<>& topT, Mat<>& top_blob, int i, int max_ii, int j, int max_jj)
 {
     const int out_elempack = top_blob.elempack;
     const int out_hstep = top_blob.dims == 3 ? (int)top_blob.cstep : top_blob.w;

@@ -27,6 +27,9 @@ gemm:
 transpose:
 	$(CC) test_transpose_unpack_output_tile.cpp -O3  -c -o $@ $(CXXFLAGS)
 
+transpose-fp16:
+	$(CC) test_transpose_unpack_output_tile_fp16.cpp -O3  -c -o $@ $(CXXFLAGS)
+
 clean:
 	rm -rf pack_a pack_b gemm transpose pack_a_fp32_to_fp16 pack_b_fp32_to_fp16
 # clang armcommon_tinycv_rotate_fp16.c armcommon_tinycv_rotate_ui8.c main_fp16.c -O3  -o mat_fp16
