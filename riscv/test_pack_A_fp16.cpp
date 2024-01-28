@@ -227,15 +227,35 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
             int kk = 0;
             for (; kk + 7 < max_kk; kk += 8)
             {
-                vuint16m1_t _r0 = vle16_v_u16m1(p0, vl);
-                vuint16m1_t _r1 = vle16_v_u16m1(p0 + 8, vl);
-                vuint16m1_t _r2 = vle16_v_u16m1(p0 + 16, vl);
-                vuint16m1_t _r3 = vle16_v_u16m1(p0 + 24, vl);
-                vuint16m1_t _r4 = vle16_v_u16m1(p0 + 32, vl);
-                vuint16m1_t _r5 = vle16_v_u16m1(p0 + 40, vl);
-                vuint16m1_t _r6 = vle16_v_u16m1(p0 + 48, vl);
-                vuint16m1_t _r7 = vle16_v_u16m1(p0 + 56, vl);
-                vsseg8e16_v_u16m1(pp, _r0, _r1, _r2, _r3, _r4, _r5, _r6, _r7, vl);
+                // vuint16m1_t _r0 = vle16_v_u16m1(p0, vl);
+                // vuint16m1_t _r1 = vle16_v_u16m1(p0 + 8, vl);
+                // vuint16m1_t _r2 = vle16_v_u16m1(p0 + 16, vl);
+                // vuint16m1_t _r3 = vle16_v_u16m1(p0 + 24, vl);
+                // vuint16m1_t _r4 = vle16_v_u16m1(p0 + 32, vl);
+                // vuint16m1_t _r5 = vle16_v_u16m1(p0 + 40, vl);
+                // vuint16m1_t _r6 = vle16_v_u16m1(p0 + 48, vl);
+                // vuint16m1_t _r7 = vle16_v_u16m1(p0 + 56, vl);
+                // vsseg8e16_v_u16m1(pp, _r0, _r1, _r2, _r3, _r4, _r5, _r6, _r7, vl);
+
+                vl = 8;
+                vuint16m1_t _r0;
+                vuint16m1_t _r1;
+                vuint16m1_t _r2;
+                vuint16m1_t _r3;
+                vuint16m1_t _r4;
+                vuint16m1_t _r5;
+                vuint16m1_t _r6;
+                vuint16m1_t _r7; 
+                vlseg8e16_v_u16m1(&_r0, &_r1, &_r2, &_r3, &_r4, &_r5, &_r6, &_r7, p0, vl);
+                vse16_v_u16m1(pp, _r0, vl);
+                vse16_v_u16m1(pp + 8, _r1, vl);
+                vse16_v_u16m1(pp + 16, _r2, vl);
+                vse16_v_u16m1(pp + 24, _r3, vl);
+                vse16_v_u16m1(pp + 32, _r4, vl);
+                vse16_v_u16m1(pp + 40, _r5, vl);
+                vse16_v_u16m1(pp + 48, _r6, vl);
+                vse16_v_u16m1(pp + 56, _r7, vl);
+
                 // uint16x8x4_t _r0123 = vld4q_u16(p0);
                 // uint16x8x4_t _r4567 = vld4q_u16(p0 + 32);
                 // uint16x8x2_t _r04 = vuzpq_u16(_r0123.val[0], _r4567.val[0]);
