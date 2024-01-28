@@ -197,7 +197,7 @@ static inline int csrr_vlenb()
     return a;
 }
 
-static inline void transpose4x4_f16(vfloat16mf2_t& _r0, vfloat16mf2_t& _r1, vfloat16mf2_t& _r2, vfloat16mf2_t& _r3, size_t vl)
+static inline void transpose4x4_f16(vfloat16m1_t& _r0, vfloat16m1_t& _r1, vfloat16m1_t& _r2, vfloat16m1_t& _r3, size_t vl)
 {
     __fp16 tmp[4][4];
     vsse16_v_f16m1(&tmp[0][0], sizeof(__fp16) * 4, _r0, vl);
@@ -232,6 +232,18 @@ static inline void transpose8x8_f16(vfloat16m1_t& _r0, vfloat16m1_t _r1, vfloat1
     _r6 = vle16_v_f16m1(ptr + 6 * 4, vl);
     _r7 = vle16_v_f16m1(ptr + 7 * 4, vl);
 }
+
+// static inline void transpose8x4_f16(vfloat16m1_t& _r0, vfloat16m1_t& _r1, vfloat16m1_t& _r2, vfloat16m1_t& _r3, size_t vl)
+// {
+//     __fp16 tmp[8][4];
+
+
+//     __fp16* ptr = (__fp16*)tmp;
+//     _r0 = vle16_v_f16m1(ptr + 0 * 4, vl);
+//     _r1 = vle16_v_f16m1(ptr + 1 * 4, vl);
+//     _r2 = vle16_v_f16m1(ptr + 2 * 4, vl);
+//     _r3 = vle16_v_f16m1(ptr + 3 * 4, vl);
+// }
 
 static inline void transpose8x8_ps(vfloat32m1_t& _r0l, vfloat32m1_t& _r0h,
                                    vfloat32m1_t& _r1l, vfloat32m1_t& _r1h,
