@@ -82,6 +82,19 @@ void print_Mat(Mat<T>& mat) {
     } 
 }
 
+template <>
+void print_Mat<unsigned short>(Mat<unsigned short>& mat) {
+    unsigned short* data = mat;
+    int w = mat.w;
+    int h = mat.h;
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            printf("%3d ", data[i * w + j]);
+        }
+        printf("\n");
+    } 
+}
+
 template<typename T = float>
 bool check_Mat(Mat<T>& correct, Mat<T>& test) {
     float* data_correct = correct;

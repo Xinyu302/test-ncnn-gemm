@@ -6,17 +6,20 @@ ALL: pack_a pack_b pack_a_fp32_to_fp16 pack_b_fp32_to_fp16
 pack_a: test_pack_A.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
-run: pack_a
-	qemu-riscv64 -cpu c906fdv ./pack_a
-
 pack_a_fp32_to_fp16: test_pack_A_fp32_to_fp16.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
 pack_b_fp32_to_fp16: test_pack_B_fp32_to_fp16.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
+pack_a_fp16: test_pack_A_fp16.cpp
+	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
+
 pack_b: test_pack_B.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
+
+run: pack_a
+	qemu-riscv64 -cpu c906fdv ./pack_a
 
 runb: pack_b
 	qemu-riscv64 -cpu c906fdv ./pack_b
