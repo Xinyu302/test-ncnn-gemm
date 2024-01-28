@@ -52,6 +52,10 @@ static void pack_A_tile_fp32_to_fp16(const Mat<>& A, Mat<__fp16>& AT, int i, int
             p1 += vl;
             p2 += vl;
             p3 += vl;
+            p4 += vl;
+            p5 += vl;
+            p6 += vl;
+            p7 += vl;
             n -= vl;
         }
     }
