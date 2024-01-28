@@ -238,30 +238,106 @@ static void transpose_pack_B_tile_fp32_to_fp16(const Mat<>& B, Mat<__fp16>& BT, 
     __fp16* pp = BT;
 
     int jj = 0;
-    
-    int len = 12;
-    // len should be 12, 8, 4, 2, 1
-    while (len > 0) {
-        for (; jj + len - 1 < max_jj; jj += len)
-        {
-            vl = vsetvl_e32m4(len);
-            const float* p0 = (const float*)B + k * B_hstep + (j + jj);
 
-            int kk = 0;
-            for (; kk < max_kk; kk++)
-            {
-                vfloat16m2_t _r0 = vfncvt_f_f_w_f16m2(vle32_v_f32m4(p0, vl), vl);
-                vse16_v_f16m2(pp, _r0, vl);
-                pp += vl;
-                p0 += B_hstep;
-            }
-        }
-        if (len <= 4) {
-            len /= 2;
-        } else {
-            len -= 4;
+    for (; jj + 12 < max_jj; jj += 12)
+    {
+        vl = 12;
+        const float* p0 = (const float*)B + k * B_hstep + (j + jj);
+
+        int kk = 0;
+        for (; kk < max_kk; kk++)
+        {
+            vfloat16m2_t _r0 = vfncvt_f_f_w_f16m2(vle32_v_f32m4(p0, vl), vl);
+            vse16_v_f16m2(pp, _r0, vl);
+            pp += vl;
+            p0 += B_hstep;
         }
     }
+
+    for (; jj + 8 < max_jj; jj += 8)
+    {
+        vl = 8;
+        const float* p0 = (const float*)B + k * B_hstep + (j + jj);
+
+        int kk = 0;
+        for (; kk < max_kk; kk++)
+        {
+            vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
+            vse16_v_f16m1(pp, _r0, vl);
+            pp += vl;
+            p0 += B_hstep;
+        }
+    }
+
+    for (; jj + 4 < max_jj; jj += 4)
+    {
+        vl = 4;
+        const float* p0 = (const float*)B + k * B_hstep + (j + jj);
+
+        int kk = 0;
+        for (; kk < max_kk; kk++)
+        {
+            vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
+            vse16_v_f16m1(pp, _r0, vl);
+            pp += vl;
+            p0 += B_hstep;
+        }
+    }
+
+    for (; jj + 2 < max_jj; jj += 2)
+    {
+        vl = 2;
+        const float* p0 = (const float*)B + k * B_hstep + (j + jj);
+
+        int kk = 0;
+        for (; kk < max_kk; kk++)
+        {
+            vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
+            vse16_v_f16m1(pp, _r0, vl);
+            pp += vl;
+            p0 += B_hstep;
+        }
+    }
+
+    for (; jj < max_jj; jj += 1)
+    {
+        vl = 1;
+        const float* p0 = (const float*)B + k * B_hstep + (j + jj);
+
+        int kk = 0;
+        for (; kk < max_kk; kk++)
+        {
+            vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
+            vse16_v_f16m1(pp, _r0, vl);
+            pp += vl;
+            p0 += B_hstep;
+        }
+    }
+
+
+    // int len = 12;
+    // // len should be 12, 8, 4, 2, 1
+    // while (len > 0) {
+    //     for (; jj + len - 1 < max_jj; jj += len)
+    //     {
+    //         vl = vsetvl_e32m4(len);
+    //         const float* p0 = (const float*)B + k * B_hstep + (j + jj);
+
+    //         int kk = 0;
+    //         for (; kk < max_kk; kk++)
+    //         {
+    //             vfloat16m2_t _r0 = vfncvt_f_f_w_f16m2(vle32_v_f32m4(p0, vl), vl);
+    //             vse16_v_f16m2(pp, _r0, vl);
+    //             pp += vl;
+    //             p0 += B_hstep;
+    //         }
+    //     }
+    //     if (len <= 4) {
+    //         len /= 2;
+    //     } else {
+    //         len -= 4;
+    //     }
+    // }
 }
 
 int main()
