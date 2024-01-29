@@ -184,25 +184,6 @@ static void transpose_pack_A_tile_fp32_to_fp16(const Mat<>& A, Mat<__fp16>& AT, 
             p0 += A_hstep;
         }
     }
-    // int len = 8;
-    // while (len > 0) {
-    //     for (; ii + len - 1 < max_ii; ii += len)
-    //     {
-    //         vl = len;
-    //         const float* p0 = (const float*)A + k * A_hstep + (i + ii);
-
-    //         int kk = 0;
-    //         for (; kk < max_kk; kk++)
-    //         {
-    //             vfloat16m1_t _r0 = vfncvt_f_f_w_f16m1(vle32_v_f32m2(p0, vl), vl);
-    //             vse16_v_f16m1(pp, _r0, vl);
-    //             pp += vl;
-    //             p0 += A_hstep;
-    //         }
-    //     }
-    //     len /= 2;
-    // }
-
 #endif // __riscv_vector
 }
 
