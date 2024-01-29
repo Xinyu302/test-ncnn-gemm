@@ -291,7 +291,6 @@ static void transpose_unpack_output_tile_bf16_fp16(const Mat& topT, Mat& top_blo
     for (; ii < max_ii; ii += 1)
     {
 #if __riscv_vector
-#if __aarch64__
         if (out_elempack == 8)
         {
             unsigned short* p0 = (unsigned short*)top_blob + (j / 8 * 8) * out_hstep + (i + ii) * 8;
@@ -325,7 +324,6 @@ static void transpose_unpack_output_tile_bf16_fp16(const Mat& topT, Mat& top_blo
                 p0 += out_hstep * 8;
             }
         }
-#endif // __aarch64__
         if (out_elempack == 4)
         {
             unsigned short* p0 = (unsigned short*)top_blob + j * out_hstep + (i + ii) * 4;
