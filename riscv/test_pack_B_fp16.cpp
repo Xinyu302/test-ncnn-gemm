@@ -107,24 +107,18 @@ static void pack_B_tile_bf16_fp16(const Mat<unsigned short>& B, Mat<unsigned sho
                 vuint16m1_t _ra = vle16_v_u16m1(pa, vl);
                 vuint16m1_t _rb = vle16_v_u16m1(pb, vl);
 
-                transpose4x4_u16(_r0, _r1, _r2, _r3, vl);
-                transpose4x4_u16(_r4, _r5, _r6, _r7, vl);
-                transpose4x4_u16(_r8, _r9, _ra, _rb, vl);
-
-                vse16_v_u16m1(pp, _r0, vl);
-                vse16_v_u16m1(pp + 4, _r4, vl);
-                vse16_v_u16m1(pp + 4 * 2, _r8, vl);
-                vse16_v_u16m1(pp + 4 * 3, _r1, vl);
-                vse16_v_u16m1(pp + 4 * 4, _r5, vl);
-                vse16_v_u16m1(pp + 4 * 5, _r9, vl);
-                vse16_v_u16m1(pp + 4 * 6, _r2, vl);
-                vse16_v_u16m1(pp + 4 * 7, _r6, vl);
-                vse16_v_u16m1(pp + 4 * 8, _ra, vl);
-                vse16_v_u16m1(pp + 4 * 9, _r3, vl);
-                vse16_v_u16m1(pp + 4 * 10, _r7, vl);
-                vse16_v_u16m1(pp + 4 * 11, _rb, vl);
-
-
+                vsse16_v_u16m1(pp, 12 * sizeof(unsigned short), _r0, vl);
+                vsse16_v_u16m1(pp + 1, 12 * sizeof(unsigned short), _r1, vl);
+                vsse16_v_u16m1(pp + 2, 12 * sizeof(unsigned short), _r2, vl);
+                vsse16_v_u16m1(pp + 3, 12 * sizeof(unsigned short), _r3, vl);
+                vsse16_v_u16m1(pp + 4, 12 * sizeof(unsigned short), _r4, vl);
+                vsse16_v_u16m1(pp + 5, 12 * sizeof(unsigned short), _r5, vl);
+                vsse16_v_u16m1(pp + 6, 12 * sizeof(unsigned short), _r6, vl);
+                vsse16_v_u16m1(pp + 7, 12 * sizeof(unsigned short), _r7, vl);
+                vsse16_v_u16m1(pp + 8, 12 * sizeof(unsigned short), _r8, vl);
+                vsse16_v_u16m1(pp + 9, 12 * sizeof(unsigned short), _r9, vl);
+                vsse16_v_u16m1(pp + 10, 12 * sizeof(unsigned short), _ra, vl);
+                vsse16_v_u16m1(pp + 11, 12 * sizeof(unsigned short), _rb, vl); 
 
                 pp += 48;
                 p0 += 4;
@@ -438,13 +432,6 @@ static void transpose_pack_B_tile_bf16_fp16(const Mat<unsigned short>& B, Mat<un
                 vsse16_v_u16m1(pp + 9, 12 * sizeof(unsigned short), _r9, vl);
                 vsse16_v_u16m1(pp + 10, 12 * sizeof(unsigned short), _ra, vl);
                 vsse16_v_u16m1(pp + 11, 12 * sizeof(unsigned short), _rb, vl); 
-
-
-
-
-
-
-
 
                 pp += 96;
                 p0 += B_hstep * 8;
