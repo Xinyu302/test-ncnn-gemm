@@ -15,6 +15,9 @@ pack_b_fp32_to_fp16: test_pack_B_fp32_to_fp16.cpp
 pack_a_fp16: test_pack_A_fp16.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 
+pack_b_fp16: test_pack_B_fp16.cpp
+	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
+
 pack_b: test_pack_B.cpp
 	$(CC) $^ -O3  -o $@ $(CXXFLAGS)
 

@@ -224,6 +224,20 @@ static inline void transpose4x4_f16(vfloat16m1_t& _r0, vfloat16m1_t& _r1, vfloat
     _r3 = vle16_v_f16m1(ptr + 3 * 4, vl);
 }
 
+static inline void transpose4x4_u16(vuint16m1_t& _r0, vuint16m1_t& _r1, vuint16m1_t& _r2, vuint16m1_t& _r3, size_t vl)
+{
+    uint16_t tmp[4][4];
+    vsse16_v_u16m1(&tmp[0][0], sizeof(uint16_t) * 4, _r0, vl);
+    vsse16_v_u16m1(&tmp[0][1], sizeof(uint16_t) * 4, _r1, vl);
+    vsse16_v_u16m1(&tmp[0][2], sizeof(uint16_t) * 4, _r2, vl);
+    vsse16_v_u16m1(&tmp[0][3], sizeof(uint16_t) * 4, _r3, vl);
+    uint16_t* ptr = (uint16_t*)tmp;
+    _r0 = vle16_v_u16m1(ptr + 0 * 4, vl);
+    _r1 = vle16_v_u16m1(ptr + 1 * 4, vl);
+    _r2 = vle16_v_u16m1(ptr + 2 * 4, vl);
+    _r3 = vle16_v_u16m1(ptr + 3 * 4, vl);
+}
+
 static inline void transpose8x8_f16(vfloat16m1_t& _r0, vfloat16m1_t _r1, vfloat16m1_t& _r2, vfloat16m1_t& _r3, vfloat16m1_t& _r4, vfloat16m1_t& _r5, vfloat16m1_t& _r6, vfloat16m1_t& _r7, size_t vl)
 {
     __fp16 tmp[8][8];
