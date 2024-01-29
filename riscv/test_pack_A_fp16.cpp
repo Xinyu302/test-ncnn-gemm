@@ -227,16 +227,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
             int kk = 0;
             for (; kk + 7 < max_kk; kk += 8)
             {
-                // vuint16m1_t _r0 = vle16_v_u16m1(p0, vl);
-                // vuint16m1_t _r1 = vle16_v_u16m1(p0 + 8, vl);
-                // vuint16m1_t _r2 = vle16_v_u16m1(p0 + 16, vl);
-                // vuint16m1_t _r3 = vle16_v_u16m1(p0 + 24, vl);
-                // vuint16m1_t _r4 = vle16_v_u16m1(p0 + 32, vl);
-                // vuint16m1_t _r5 = vle16_v_u16m1(p0 + 40, vl);
-                // vuint16m1_t _r6 = vle16_v_u16m1(p0 + 48, vl);
-                // vuint16m1_t _r7 = vle16_v_u16m1(p0 + 56, vl);
-                // vsseg8e16_v_u16m1(pp, _r0, _r1, _r2, _r3, _r4, _r5, _r6, _r7, vl);
-
                 vl = 8;
                 vuint16m1_t _r0;
                 vuint16m1_t _r1;
@@ -255,21 +245,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
                 vse16_v_u16m1(pp + 40, _r5, vl);
                 vse16_v_u16m1(pp + 48, _r6, vl);
                 vse16_v_u16m1(pp + 56, _r7, vl);
-
-                // uint16x8x4_t _r0123 = vld4q_u16(p0);
-                // uint16x8x4_t _r4567 = vld4q_u16(p0 + 32);
-                // uint16x8x2_t _r04 = vuzpq_u16(_r0123.val[0], _r4567.val[0]);
-                // uint16x8x2_t _r15 = vuzpq_u16(_r0123.val[1], _r4567.val[1]);
-                // uint16x8x2_t _r26 = vuzpq_u16(_r0123.val[2], _r4567.val[2]);
-                // uint16x8x2_t _r37 = vuzpq_u16(_r0123.val[3], _r4567.val[3]);
-                // vst1q_u16(pp, _r04.val[0]);
-                // vst1q_u16(pp + 8, _r15.val[0]);
-                // vst1q_u16(pp + 16, _r26.val[0]);
-                // vst1q_u16(pp + 24, _r37.val[0]);
-                // vst1q_u16(pp + 32, _r04.val[1]);
-                // vst1q_u16(pp + 40, _r15.val[1]);
-                // vst1q_u16(pp + 48, _r26.val[1]);
-                // vst1q_u16(pp + 56, _r37.val[1]);
                 pp += 64;
                 p0 += A_hstep * 8;
             }
@@ -291,12 +266,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
                 vse16_v_u16m1(pp + 4, _r1, vl);
                 vse16_v_u16m1(pp + 8, _r2, vl);
                 vse16_v_u16m1(pp + 12, _r3, vl);
-                // uint16x8x4_t _r0123 = vld4q_u16(p0);
-                // vst1q_u16(pp, _r0123.val[0]);
-                // vst1q_u16(pp + 8, _r0123.val[1]);
-                // vst1q_u16(pp + 16, _r0123.val[2]);
-                // vst1q_u16(pp + 24, _r0123.val[3]);
-                pp += 32;
                 p0 += A_hstep * 4;
             }
         }
@@ -328,13 +297,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
                 vuint16m1_t _r2 = vle16_v_u16m1(p0 + 16, vl);
                 vuint16m1_t _r3 = vle16_v_u16m1(p0 + 24, vl);
                 vsseg4e16_v_u16m1(pp, _r0, _r1, _r2, _r3, vl);
-
-                // uint16x8x4_t _r0123;
-                // _r0123.val[0] = vle16_v_u16m1(p0, vl);
-                // _r0123.val[1] = vle16_v_u16m1(p0 + 8, vl);
-                // _r0123.val[2] = vle16_v_u16m1(p0 + 16, vl);
-                // _r0123.val[3] = vle16_v_u16m1(p0 + 24, vl);
-                // vst4q_u16(pp, _r0123);
                 pp += 32;
                 p0 += A_hstep * 8;
             }
@@ -356,12 +318,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
                 vse16_v_u16m1(pp + 4, _r1, vl);
                 vse16_v_u16m1(pp + 8, _r2, vl);
                 vse16_v_u16m1(pp + 12, _r3, vl);
-
-
-                // vse16_v_u16m4(pp, _r0123, vl);
-                // uint16x4x4_t _r0123 = vld4_u16(p0);
-                // vst1q_u16(pp, vcombine_u16(_r0123.val[0], _r0123.val[1]));
-                // vst1q_u16(pp + 8, vcombine_u16(_r0123.val[2], _r0123.val[3]));
                 pp += 16;
                 p0 += A_hstep * 4;
             }
@@ -374,7 +330,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
             for (; kk < max_kk; kk++)
             {
                 vl = 4;
-                // vst1_u16(pp, vld1_u16(p0));
                 vse16_v_u16m1(pp, vle16_v_u16m1(p0, vl), vl);
                 pp += 4;
                 p0 += A_hstep;
@@ -396,10 +351,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
                 vuint16m1_t _r0 = vle16_v_u16m1(p0, vl);
                 vuint16m1_t _r1 = vle16_v_u16m1(p0 + 8, vl);
                 vsseg2e16_v_u16m1(pp, _r0, _r1, vl);
-                // uint16x8x2_t _r01;
-                // _r01.val[0] = vle16_v_u16m1(p0, vl);
-                // _r01.val[1] = vle16_v_u16m1(p0 + 8, vl);
-                // vst2q_u16(pp, _r01);
                 pp += 16;
                 p0 += A_hstep * 8;
             }
@@ -416,10 +367,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
                 vuint16m1_t _r011 = vle16_v_u16m1(p0 + 4, vl);
                 vsseg2e16_v_u16m1(pp, _r010, _r011, vl);
         
-                // uint16x4x2_t _r01;
-                // _r01.val[0] = vld1_u16(p0);
-                // _r01.val[1] = vld1_u16(p0 + 4);
-                // vst2_u16(pp, _r01);
                 pp += 8;
                 p0 += A_hstep * 4;
             }
@@ -464,7 +411,6 @@ static void transpose_pack_A_tile_bf16_fp16(const Mat<unsigned short>& A, Mat<un
             {
                 vl = 4;
                 vse16_v_u16m1(pp, vle16_v_u16m1(p0, vl), vl);
-                // vst1_u16(pp, vld1_u16(p0));
                 pp += 4;
                 p0 += A_hstep * 4;
             }
